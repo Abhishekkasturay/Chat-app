@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>My WebSocket</h1>
+
+    <button id="toggle-Room1">Toggle-Room1</button>
+    <button id="toggle-Room2">Toggle-Room2</button>
+
+    <input type="text" placeholder="send some messages" id="message-input" />
+    <button id="send-message">send message</button>
+
+    <div id="messages"></div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
