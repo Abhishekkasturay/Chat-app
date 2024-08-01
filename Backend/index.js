@@ -9,7 +9,7 @@ app.use(express.static("./public"));
 
 // Enable CORS for your frontend URL
 const corsOptions = {
-  origin: "https://chat-app-5-d0z6.onrender.com/", 
+  origin: "https://chat-app-5-d0z6.onrender.com", 
   methods: ["GET", "POST"],
   optionsSuccessStatus: 200,
 };
