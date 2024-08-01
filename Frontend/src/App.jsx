@@ -6,7 +6,7 @@ enableMapSet();
 
 export default function App() {
   const [mySocket, setMySocket] = useState(null);
-  const [roomIdToMapping, setroomIdToMapping] = useState({});
+  const [roomIdToMapping, setRoomIdToMapping] = useState({});
   const [activeRoomId, setActiveRoomId] = useState(null);
   const [message, setMessage] = useState("");
   const [userName, setUserName] = useState("");
@@ -33,10 +33,10 @@ export default function App() {
     setMySocket(socket);
 
     socket.on("roomMessage", (data) => {
-      setroomIdToMapping(
+      console.log("Received roomMessage:", data);
+      setRoomIdToMapping(
         produce((state) => {
           state[data.roomId] = state[data.roomId] || [];
-
           if (
             !state[data.roomId].some((obj) => obj.messageId === data.messageId)
           ) {
@@ -47,6 +47,7 @@ export default function App() {
     });
 
     socket.on("userTyping", (data) => {
+      console.log("User typing:", data);
       const { roomId, userName } = data;
 
       setUserTypingMapping(
