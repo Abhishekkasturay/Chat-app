@@ -4,9 +4,11 @@ import { produce, enableMapSet } from "immer";
 
 enableMapSet();
 
+const socketURL = process.env.REACT_APP_SOCKET_URL || "https://chat-app-6-ams3.onrender.com"; 
+
 export default function App() {
   const [mySocket, setMySocket] = useState(null);
-  const [roomIdToMapping, setroomIdToMapping] = useState({});
+  const [roomIdToMapping, setRoomIdToMapping] = useState({});
   const [activeRoomId, setActiveRoomId] = useState(null);
   const [message, setMessage] = useState("");
   const [userName, setUserName] = useState("");
@@ -26,20 +28,17 @@ export default function App() {
       }
     }
 
-    const socket = io("ws://localhost:3001", {
+    const socket = io(socketURL, {
       transports: ["websocket"],
     });
 
     setMySocket(socket);
 
     socket.on("roomMessage", (data) => {
-      setroomIdToMapping(
+      setRoomIdToMapping(
         produce((state) => {
           state[data.roomId] = state[data.roomId] || [];
-
-          if (
-            !state[data.roomId].some((obj) => obj.messageId === data.messageId)
-          ) {
+          if (!state[data.roomId].some((obj) => obj.messageId === data.messageId)) {
             state[data.roomId].push(data);
           }
         })
