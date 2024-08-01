@@ -2,41 +2,44 @@ import express from "express";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { nanoid } from "nanoid";
+import cors from "cors";
 
 const app = express();
 app.use(express.static("./public"));
 
-// HTTP server
+// Enable CORS for your frontend URL
+const corsOptions = {
+  origin: "https://chat-app-5-d0z6.onrender.com/", 
+  methods: ["GET", "POST"],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+
+// HTTP and WebSocket server
 const httpServer = createServer(app);
-httpServer.listen(3000, () => {
-  console.log("HTTP server listening on port 3000");
-});
-
-// WebSocket server
-const wsApp = express();
-const wsServer = createServer(wsApp);
-wsServer.listen(3001, () => {
-  console.log("WebSocket server running on port 3001");
-});
-
-const io = new Server(wsServer, {
+const io = new Server(httpServer, {
   transports: ["websocket"],
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  },
+  cors: corsOptions,
+});
+
+const PORT = process.env.PORT || 3000;
+httpServer.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 const messageMapping = {};
 
 io.on("connection", (socket) => {
+  console.log(`New client connected: ${socket.id}`);
+
   socket.on("sendMessage", (message) => {
     const roomId = message.roomId;
-
     const finalMessage = {
       ...message,
       messageId: nanoid(),
     };
+
     if (!messageMapping[roomId]) {
       messageMapping[roomId] = [];
     }
@@ -64,8 +67,12 @@ io.on("connection", (socket) => {
         socket.emit("roomMessage", message);
       });
     } else {
-      socket.emit("You have requested the wrong room");
+      socket.emit("error", "You have requested the wrong room");
     }
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`Client disconnected: ${socket.id}`);
   });
 });
 
