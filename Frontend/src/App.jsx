@@ -12,21 +12,22 @@ export default function App() {
   const [activeRoomId, setActiveRoomId] = useState(null);
   const [message, setMessage] = useState("");
   const [userName, setUserName] = useState("");
-  const isPromptAlert = useRef(false);
+  const [isPrompted, setIsPrompted] = useState(false);
   const [userTypingMapping, setUserTypingMapping] = useState({});
   const [userTypingTimeOutMapping, setUserTypingTimeOutMapping] = useState({});
 
   useEffect(() => {
-    if (!isPromptAlert.current) {
-      isPromptAlert.current = true;
-      while (true) {
-        const ValidUserName = window.prompt("Enter your Name");
-        if (ValidUserName?.trim()) {
-          setUserName(ValidUserName);
-          break;
-        }
-      }
-    }
+  if (!isPrompted) {
+    setIsPrompted(true);
+    let ValidUserName;
+    do {
+      ValidUserName = window.prompt("Enter your Name (Press Cancel to Exit)");
+      if (ValidUserName === null) return;
+    } while (!ValidUserName?.trim());
+
+    setUserName(ValidUserName);
+  }
+}, [isPrompted]);
 
     const socket = io(socketURL, {
       transports: ["websocket"],
