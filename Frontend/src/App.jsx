@@ -16,16 +16,16 @@ export default function App() {
   const [userTypingMapping, setUserTypingMapping] = useState({});
   const [userTypingTimeOutMapping, setUserTypingTimeOutMapping] = useState({});
 
- useEffect(() => {
-    if (!isPromptAlert.current) {
-      isPromptAlert.current = true;
-      while (true) {
-        const ValidUserName = window.prompt("Enter your Name");
-        if (ValidUserName?.trim()) {
-          setUserName(ValidUserName);
-          break;
-        }
-      }
+useEffect(() => {
+  if (!isPromptAlert.current) {
+    isPromptAlert.current = true;
+    let validUserName = "";
+    while (!validUserName?.trim()) {
+      validUserName = window.prompt("Enter your Name");
+    }
+    setUserName(validUserName);
+  }
+
     
 
     const socket = io(socketURL, {
